@@ -1,0 +1,84 @@
+name: Create Confluence Page
+
+on:
+  workflow_dispatch:  # Trigger manually from the Actions tab
+
+jobs:
+  create-confluence-page:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: pip install requests
+
+      # Step 4: Run Python script
+      - name: Run Confluence page creation script
+        env:
+          CONFLUENCE_BASE_URL: "https://sinhaludyog.atlassian.net/wiki"
+          CONFLUENCE_API_USER: "s.kumar@kimbal.io"
+          CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          SPACE_KEY: "DAG"
+        run: |
+          python <<EOF
+          import requests
+          import json
+          import os
+
+          # Configuration from environment variables
+          CONFLUENCE_BASE_URL = os.getenv("CONFLUENCE_BASE_URL")
+          CONFLUENCE_API_USER = os.getenv("CONFLUENCE_API_USER")
+          CONFLUENCE_API_TOKEN = os.getenv("CONFLUENCE_API_TOKEN")
+          SPACE_KEY = os.getenv("SPACE_KEY")
+          PAGE_TITLE = "Automated Page Title via GitHub Actions"
+          PAGE_CONTENT = "<h1>Created from GitHub Actions!</h1><p>This page was created using a workflow dispatch trigger.</p>"
+
+          # API endpoint
+          url = f"{CONFLUENCE_BASE_URL}/rest/api/content"
+
+          # Headers
+          headers = {
+              "Content-Type": "application/json",
+          }
+
+          # Data payload
+          data = {
+              "type": "page",
+              "title": PAGE_TITLE,
+              "space": {"key": SPACE_KEY},
+              "body": {
+                  "storage": {
+                      "value": PAGE_CONTENT,
+                      "representation": "storage",
+                  }
+              },
+          }
+
+          # Make the API request
+          response = requests.post(
+              url,
+              headers=headers,
+              auth=(CONFLUENCE_API_USER, CONFLUENCE_API_TOKEN),
+              data=json.dumps(data),
+          )
+
+          # Check the response
+          if response.status_code in [200, 201]:
+              print("Page created successfully!")
+              page_url = f"{CONFLUENCE_BASE_URL}{response.json().get('_links', {}).get('webui')}"
+              print("Page URL:", page_url)
+          else:
+              print("Failed to create page.")
+              print("Status Code:", response.status_code)
+              print("Response:", response.text)
+          EOF
