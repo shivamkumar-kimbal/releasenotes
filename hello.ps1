@@ -14,7 +14,7 @@ for ($tag = 1; $tag -le $tagCount; $tag++) {
         git add $fileName
 
         # Corrected commit message to avoid colon issues by splitting the string
-        $commitMessage = "Dummy commit #${commit} for Tag v1.0.$tag" + ": Added ${fileName}"
+        $commitMessage = "DEVO-19$tag #${commit} for Tag v1.0.$tag" + ": Added ${fileName}"
         git commit -m $commitMessage
         git push
     }
