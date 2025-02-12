@@ -13,12 +13,13 @@ for ($tag = 1; $tag -le $tagCount; $tag++) {
         # Stage the file
         git add $fileName
 
-        # Commit with a unique message
-        git commit -m "Dummy commit #${commit} for Tag v1.0.$tag: Added ${fileName}"
+        # Corrected commit message to avoid colon issues by splitting the string
+        $commitMessage = "Dummy commit #${commit} for Tag v1.0.$tag" + ": Added ${fileName}"
+        git commit -m $commitMessage
     }
 
     # Create a tag after each set of 5 commits
-    $tagName = "v2.0.$tag"
+    $tagName = "v1.0.$tag"
     git tag $tagName
     Write-Host "🏷️  Created tag $tagName with $commitsPerTag commits."
 }
