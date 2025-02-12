@@ -57,6 +57,7 @@ jobs:
           CONFLUENCE_API_USER: "s.kumar@kimbal.io"
           CONFLUENCE_API_TOKEN: ${{ secrets.CONFLUENCE_API_TOKEN }}
           SPACE_KEY: "DAG"
+          ANCESTOR_ID: "501776424"
           START_TAG: ${{ inputs.start_tag }}
           END_TAG: ${{ inputs.end_tag }}
           PAGE_TITLE: ${{ inputs.page_title }}

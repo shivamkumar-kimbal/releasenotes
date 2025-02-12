@@ -127,6 +127,7 @@ def create_confluence_page(content):
     api_token = os.getenv('CONFLUENCE_API_TOKEN')
     space_key = os.getenv('SPACE_KEY')
     page_title = os.getenv('PAGE_TITLE')
+    ancestor = os.getenv('ANCESTOR_ID')
 
     # Validate required environment variables
     if not all([base_url, api_user, api_token, space_key, page_title]):
@@ -143,6 +144,7 @@ def create_confluence_page(content):
         "type": "page",
         "title": page_title,
         "space": {"key": space_key},
+        "ancestors": [{"id": ancestor}],
         "body": {
             "storage": {
                 "value": content,
