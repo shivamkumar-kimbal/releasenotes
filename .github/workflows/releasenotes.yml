@@ -17,6 +17,15 @@ on:
         required: true
         type: string
         default: 'Release Notes'
+      exclude_authors:
+        description: 'Comma-separated list of authors to exclude'
+        required: false
+        type: string
+      jira_pattern:
+        description: 'Filter commits by JIRA ticket pattern (default: all commits)'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   generate-and-publish:
@@ -52,4 +61,6 @@ jobs:
           END_TAG: ${{ inputs.end_tag }}
           PAGE_TITLE: ${{ inputs.page_title }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          EXCLUDE_AUTHORS: ${{ inputs.exclude_authors }}
+          JIRA_PATTERN: ${{ inputs.jira_pattern }}
         run: python scripts/generate_release_notes.py

@@ -16,6 +16,7 @@ for ($tag = 1; $tag -le $tagCount; $tag++) {
         # Corrected commit message to avoid colon issues by splitting the string
         $commitMessage = "Dummy commit #${commit} for Tag v1.0.$tag" + ": Added ${fileName}"
         git commit -m $commitMessage
+        git push
     }
 
     # Create a tag after each set of 5 commits
