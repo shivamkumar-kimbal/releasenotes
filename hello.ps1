@@ -1,25 +1,26 @@
-# Ensure you're in the correct Git repository directory
-$commitCount = 10  # Number of dummy commits to create
+# Number of tags and commits per tag
+$tagCount = 5
+$commitsPerTag = 5
 
-for ($i = 1; $i -le $commitCount; $i++) {
-    $fileName = "dummy_file_$i.txt"
-    $content = "Dummy content $i"
+for ($tag = 1; $tag -le $tagCount; $tag++) {
+    for ($commit = 1; $commit -le $commitsPerTag; $commit++) {
+        $fileName = "dummy_file_${tag}_${commit}.txt"
+        $content = "Dummy content for Tag $tag, Commit $commit"
 
-    # Create a dummy file with some content
-    Set-Content -Path $fileName -Value $content
+        # Create a dummy file with content
+        Set-Content -Path $fileName -Value $content
 
-    # Stage the file
-    git add $fileName
+        # Stage the file
+        git add $fileName
 
-    # Use ${} to properly reference variables in the commit message
-    git commit -m "Dummy commit #${i}: Added ${fileName}"
-    git push
+        # Commit with a unique message
+        git commit -m "Dummy commit #${commit} for Tag v1.0.$tag: Added ${fileName}"
+    }
+
+    # Create a tag after each set of 5 commits
+    $tagName = "v2.0.$tag"
+    git tag $tagName
+    Write-Host "🏷️  Created tag $tagName with $commitsPerTag commits."
 }
 
-# Tag the initial commit before the dummy commits (if not already tagged)
-git tag v2.0.0
-
-# Tag the latest commit after the dummy commits
-git tag v2.1.0
-
-Write-Host "✅ $commitCount dummy commits created and tagged from v1.0.0 to v1.1.0."
+Write-Host "✅ All $tagCount tags created successfully with $commitsPerTag commits each!"
