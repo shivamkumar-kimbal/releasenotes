@@ -1,6 +1,5 @@
 name: Generate Release Notes and Publish to Confluence
 
-# Trigger manually from Actions tab
 on:
   workflow_dispatch:
     inputs:
@@ -17,24 +16,15 @@ on:
         required: true
         type: string
         default: 'Release Notes'
-      exclude_authors:
-        description: 'Comma-separated list of authors to exclude'
-        required: false
+      release_owner:
+        description: 'Release owner name'
+        required: true
         type: string
-      jira_pattern:
-        description: 'Filter commits by JIRA ticket pattern (default: all commits)'
-        required: false
-        type: string
-        default: ''
+        default: 'Release Team'
 
 jobs:
   generate-and-publish:
     runs-on: ubuntu-latest
-
-    # Important: Before running this workflow, make sure to:
-    # 1. Add CONFLUENCE_API_TOKEN as a repository secret
-    # 2. Verify the CONFLUENCE_BASE_URL and CONFLUENCE_API_USER values
-    # 3. Set the correct SPACE_KEY for your Confluence space
 
     steps:
       - name: Checkout repository
@@ -61,7 +51,6 @@ jobs:
           START_TAG: ${{ inputs.start_tag }}
           END_TAG: ${{ inputs.end_tag }}
           PAGE_TITLE: ${{ inputs.page_title }}
+          RELEASE_OWNER: ${{ inputs.release_owner }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          EXCLUDE_AUTHORS: ${{ inputs.exclude_authors }}
-          JIRA_PATTERN: ${{ inputs.jira_pattern }}
         run: python scripts/generate_release_notes.py
